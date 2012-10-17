@@ -45,12 +45,13 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         is_single_select = len(self.view.sel()) == 1    # block selection
         self.view.run_command('split_selection_into_lines')
         regions = [x for x in self.view.sel()]
-        in_scope = any([self.is_r_scope(x) for x in regions])
-        if not in_scope:
+
+        if not any([self.is_r_scope(x) for x in regions]):
+            # No selections in block are scoped as R cdoe, move along
             self.advanceCursor(regions[-1])
             return
 
-        # Collate the R code across the user's selection(s)
+        # Collate the R code across selection(s)
         selection = ""
         for region in regions:
             if not self.is_r_scope(region):
@@ -62,9 +63,8 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
                 selection += self.view.substr(region) + "\n"
 
         selection = (selection[::-1].replace('\n'[::-1], '', 1))[::-1]
-
-        # only proceed if selection is not empty
         if selection == "":
+            # An empty R block somehow slipped through.
             return
 
         # split selection into lines
@@ -78,8 +78,8 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         subprocess.Popen(args)
 
         if is_single_select and not original_region.empty():
-            # Reset the original selection if a large block was originally
-            # selected (then split)
+            # Reverses side effect from our `split_selection_into_lines` trick
+            # when a selection was passed into this function
             self.view.sel().clear()
             self.view.sel().add(original_region)
 
