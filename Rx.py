@@ -85,14 +85,12 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
 
     def advanceCursor(self, region):
         (row, col) = self.view.rowcol(region.begin())
-
         # Make sure not to go past end of next line
         nextline = self.view.line(self.view.text_point(row + 1, 0))
         if nextline.size() < col:
             loc = self.view.text_point(row + 1, nextline.size())
         else:
             loc = self.view.text_point(row + 1, col)
-
         # Remove the old region and add the new one
         self.view.sel().subtract(region)
         self.view.sel().add(sublime.Region(loc, loc))
