@@ -41,6 +41,8 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         # Split the selection into new lines allows us to highlight a chunk
         # of lines that might not all fall into a source.r scope, but still
         # evaluate the ones that do.
+        original_region = self.view.sel()[0]            # info to restore orig
+        is_single_select = len(self.view.sel()) == 1    # block selection
         self.view.run_command('split_selection_into_lines')
         regions = [x for x in self.view.sel()]
         in_scope = any([self.is_r_scope(x) for x in regions])
@@ -48,7 +50,7 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
             self.advanceCursor(regions[-1])
             return
 
-        # get selection
+        # Collate the R code across the user's selection(s)
         selection = ""
         for region in regions:
             if not self.is_r_scope(region):
@@ -62,7 +64,7 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         selection = (selection[::-1].replace('\n'[::-1], '', 1))[::-1]
 
         # only proceed if selection is not empty
-        if(selection == ""):
+        if selection == "":
             return
 
         # split selection into lines
@@ -74,9 +76,12 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
             args.extend(['-e', 'tell app "%s" to cmd "' % rapp + part + '"\n'])
         # execute code
         subprocess.Popen(args)
-        # TODO: If a large region of code was highlighted, move the cursor to
-        #       the next line and deselect the region.
 
+        if is_single_select:
+            # Reset the original selection if a large block was originally
+            # selected (then split)
+            self.view.sel().clear()
+            self.view.sel().add(original_region)
 
     def advanceCursor(self, region):
         (row, col) = self.view.rowcol(region.begin())

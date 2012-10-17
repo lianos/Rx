@@ -6,13 +6,17 @@ enhances its functionality as an editor for the [R language][rlang].
 
 Included functionality:
 
+  * Enhanced **Send code to R process** functionality (from [R tools][rtools]).
+    User can send R commands to an R process from any section of a
+    document that is scoped as R code (`source.r.*`). This allows you to send
+    code from files that aren't simply `*.R` source files -- such as R code
+    found within chunks of [SWeave][sweave] and [knitr][knitr] documents, for example.
+
+    The selection can span several chunks (across "normal text"
+    blocks) and only the R chunks within the selection are parsed and sent.
+
   * Adds syntax file to support editing [Rmarkdown][rmd]
     (`⌘⇧P Set Syntax: Rmarkdown`).
-
-  * Enhanced "send command to R process" functionality (from [R tools][rtools])
-    that allows you to send R commands to an R process from any section of a
-    document that is scoped as R code (`source.r.*`). This allows you to send
-    code within chunks of [SWeave][sweave] and [knitr][knitr] documents.
 
 
 Hints
