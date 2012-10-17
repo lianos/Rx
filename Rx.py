@@ -77,7 +77,7 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         # execute code
         subprocess.Popen(args)
 
-        if is_single_select:
+        if is_single_select and not original_region.empty():
             # Reset the original selection if a large block was originally
             # selected (then split)
             self.view.sel().clear()
