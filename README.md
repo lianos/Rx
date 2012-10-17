@@ -1,5 +1,5 @@
-Rx: Take two. Call somebody else in the morning
-===============================================
+Rx: Take two; call somebody else in the morning.
+================================================
 
 This is a package currently under development for [Sublime Text 2][st2] that
 enhances its functionality as an editor for the [R language][rlang].
