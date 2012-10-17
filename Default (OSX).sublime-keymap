@@ -1,0 +1,6 @@
+[
+  {
+    "keys": ["super+enter"], "command": "send_to_rsession"
+  }
+
+]

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  This syntax definition needs a lot of help -- get inspiration from
+  the SWeave tmLanguage file
+-->
+<dict>
+  <key>fileTypes</key>
+  <array>
+    <string>Rmd</string>
+    <string>rmd</string>
+  </array>
+  <key>foldingStartMarker</key>
+  <string>^```\s*\{r(.?*)\}</string>
+  <key>foldingStopMarker</key>
+  <string>^```$</string>
+  <key>keyEquivalent</key>
+  <string>^~R</string>
+  <key>name</key>
+  <string>Rmarkdown</string>
+  <key>patterns</key>
+  <array>
+    <!--
+    <dict>
+      <key>begin</key>
+      <string>^(```\s*\{r)</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctation.definition.parameters.begin.knitr</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(\})</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctation.definition.parameters.end.knitr</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.block.parameters.knitr</string>
+    </dict>
+    -->
+    <dict>
+      <key>begin</key>
+      <!-- string>^(```\s*\{r\s?.*\})\s?$</string -->
+      <string>^(```\s*)\{r\s*.(\w.*)*(\}\s.*)$</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.section.embedded.begin.knitr</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.section.embedded.begin.knitr</string>
+        </dict>
+      </dict>
+      <key>contentName</key>
+      <string>source.r.embedded.knitr</string>
+      <key>end</key>
+      <string>^(```).*$</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.section.embedded.end.knitr</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.block.code.knitr</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>source.r</string>
+        </dict>
+      </array>
+    </dict>
+      <dict>
+        <key>begin</key>
+        <string>`r\s</string>
+        <key>contentName</key>
+        <string>source.r.inline.knitr</string>
+        <key>end</key>
+        <string>`</string>
+        <key>patterns</key>
+        <array>
+        <dict>
+          <key>include</key>
+          <string>source.r</string>
+        </dict>
+      </array>
+      </dict>
+    <dict>
+      <key>include</key>
+      <!-- string>text.html.SimpleMarkdown</string -->
+      <string>text.html.markdown</string>
+    </dict>
+  </array>
+  <key>scopeName</key>
+  <string>text.html.markdown.Rmarkdown</string>
+  <key>uuid</key>
+  <string>F5E04BF4-69A9-45AE-9205-B3F3C2B00155</string>
+</dict>
+</plist>

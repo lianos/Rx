@@ -1,0 +1,12 @@
+{
+
+  // This is the regular expression used for the current scope of the
+  // selection to recognize it as R source code
+  "r_scope_regex": "[^a-zA-Z0-9_]?source\\.r[^a-zA-Z0-9_]?",
+
+  // This is the name of the app that R is running as.
+  // On mac it is likely R64 or R32
+  // On windows, it is likely R.exe
+  "Rapp": "R64"
+
+}

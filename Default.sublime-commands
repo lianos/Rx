@@ -1,0 +1,14 @@
+[
+    {
+        "caption": "Rx: Send R Command",
+        "command": "send_to_rsession"
+    },
+    {
+        "caption": "Rx: Jump to R",
+        "command": "jump_to_rsession"
+    },
+    {
+        "caption": "Rx: Create roxygen template",
+        "command": "roxy_docs"
+    }
+]
