@@ -1,0 +1,5 @@
+TODO: sublime-ify ARE.utils/bin/rmd2html
+
+TODO: Fork https://github.com/SublimeText/NaturalDocs and add better R support
+      for roxygen2 doc blocks
+

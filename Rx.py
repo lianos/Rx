@@ -38,9 +38,9 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         return r_scope_regex.search(scope) is not None
 
     def run(self, edit):
-        ## Split the selection into new lines allows us to highlight a chunk
-        ## of lines that might not all fall into a source.r scope, but still
-        ## evaluate the ones that do.
+        # Split the selection into new lines allows us to highlight a chunk
+        # of lines that might not all fall into a source.r scope, but still
+        # evaluate the ones that do.
         self.view.run_command('split_selection_into_lines')
         regions = [x for x in self.view.sel()]
         in_scope = any([self.is_r_scope(x) for x in regions])
@@ -74,6 +74,8 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
             args.extend(['-e', 'tell app "%s" to cmd "' % rapp + part + '"\n'])
         # execute code
         subprocess.Popen(args)
+        # TODO: If a large region of code was highlighted, move the cursor to
+        #       the next line and deselect the region.
 
 
     def advanceCursor(self, region):
