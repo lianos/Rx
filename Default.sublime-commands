@@ -9,6 +9,6 @@
     },
     {
         "caption": "Rx: Create roxygen template",
-        "command": "roxy_docs"
+        "command": "roxygen_docs"
     }
 ]
