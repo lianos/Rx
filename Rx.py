@@ -37,14 +37,14 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
 
         """
         if regex is None:
-            regex = re.compile(rx_settings.get('r_scope_regex'))
+            rxs = sublime.load_settings('Rx.sublime-settings')
+            regex = re.compile(rxs.get('r_scope_regex'))
         scope = self.view.scope_name(region.begin())
         return regex.search(scope) is not None
 
     def run(self, edit):
         # The nuts and bolts of this method were taken from Rtools:
         # https://github.com/karthikram/Rtools/blob/master/Rtools.py
-        global rx_settings
         global cmdr
         if cmdr is None:
             msg = "Your platform is currently unsupported"
@@ -52,8 +52,8 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
             self.advanceCursor(regions[-1])
             return
 
-        rx_settings = sublime.load_settings('Rx.sublime-settings')
-        r_scope_regex = re.compile(rx_settings.get('r_scope_regex'))
+        rxs = sublime.load_settings('Rx.sublime-settings')
+        r_scope_regex = re.compile(rxs.get('r_scope_regex'))
 
         # Split the selection into new lines allows us to highlight a chunk
         # of lines that might not all fall into a source.r scope, but still
@@ -110,7 +110,6 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
 class Rcommander(object):
 
     def __init__(self):
-        self.app = rx_settings.get("Rapp")
         platform = sublime.platform()
         if "osx" == platform:
             self.send_code = self.send_code_osx
@@ -122,8 +121,10 @@ class Rcommander(object):
             msg = "Unknown platform/OS: (%s/%s)" % (sys.platform, os.name)
             raise UnsupportedPlatformError(msg)
 
-    def send_code_osx(self, selection):
-        app = self.app
+    def send_code_osx(self, selection, app=None):
+        if app is None:
+            rxs = sublime.load_settings('Rx.sublime-settings')
+            app = rxs.get("Rapp")
         args = ['osascript']
         for part in selection:
             args.extend(['-e', 'tell app "%s" to cmd "' % app + part + '"\n'])
@@ -160,7 +161,6 @@ class RoxygenDocsCommand(sublime_plugin.TextCommand):
 ##                    Global variables and initialization
 ## =============================================================================
 
-rx_settings = sublime.load_settings('Rx.sublime-settings')
 cmdr = None
 
 try:
