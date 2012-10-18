@@ -112,11 +112,11 @@ class Rcommander(object):
     def __init__(self):
         self.app = rx_settings.get("Rapp")
         platform = sublime.platform()
-        if "osx" in platform:
+        if "osx" == platform:
             self.send_code = self.send_code_osx
-        elif "linux" in platform:
+        elif "linux" == platform:
             self.send_code = self.send_code_linux
-        elif "windows" in platform:
+        elif "windows" == platform:
             self.send_code = self.send_code_win
         else:
             msg = "Unknown platform/OS: (%s/%s)" % (sys.platform, os.name)
