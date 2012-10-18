@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 import os
+import sys
 import subprocess
 import string
 import re
@@ -8,10 +9,24 @@ import re
 ## This file started its life as Rtools.py
 ## https://github.com/karthikram/Rtools/blob/master/Rtools.py
 
+# rx_settings = sublime.load_settings('Rx.sublime-settings')
+# r_scope_regex = rx_settings.get('r_scope_regex')
+# r_scope_regex = re.compile(r_scope_regex)
+# rapp = rx_settings.get('Rapp')
+
 rx_settings = sublime.load_settings('Rx.sublime-settings')
-r_scope_regex = rx_settings.get('r_scope_regex')
-r_scope_regex = re.compile(r_scope_regex)
-rapp = rx_settings.get('Rapp')
+
+cmdr = None
+try:
+    cmdr = Rcommander()
+except (UnsupportedPlatformError) as (e):
+    sublime.error_message(__name__ + ": " + str(e))
+    print str(e)
+
+cmdr = Rcommander()
+
+class UnsupportedPlatformError(Exception):
+    pass
 
 class SendToRsessionCommand(sublime_plugin.TextCommand):
     @staticmethod
@@ -20,7 +35,7 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         str = string.replace(str, '"', '\\"')
         return str
 
-    def is_r_scope(self, region):
+    def is_r_scope(self, region, regex=None):
         # Check if the cursor / selection is in an R source scope
         # Using region.begin() instead of region.b for the case when
         # you are in a highlighted region/block. The curor can be at
@@ -34,10 +49,23 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         #    b <- 1:10
         #    plot(a,b)
         #    ^```
+        if regex is None:
+            regex = re.compile(rx_settings.get('r_scope_regex'))
         scope = self.view.scope_name(region.begin())
-        return r_scope_regex.search(scope) is not None
+        return regex.search(scope) is not None
 
     def run(self, edit):
+        global rx_settings
+        global cmdr
+        if cmdr is None:
+            msg = "Your platform is currently unsupported"
+            sublime.error_message(__name__ + ": " + msg)
+            self.advanceCursor(regions[-1])
+            return
+
+        rx_settings = sublime.load_settings('Rx.sublime-settings')
+        r_scope_regex = re.compile(rx_settings.get('r_scope_regex'))
+
         # Split the selection into new lines allows us to highlight a chunk
         # of lines that might not all fall into a source.r scope, but still
         # evaluate the ones that do.
@@ -46,7 +74,7 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         self.view.run_command('split_selection_into_lines')
         regions = [x for x in self.view.sel()]
 
-        if not any([self.is_r_scope(x) for x in regions]):
+        if not any([self.is_r_scope(x, r_scope_regex) for x in regions]):
             # No selections in block are scoped as R cdoe, move along
             self.advanceCursor(regions[-1])
             return
@@ -69,13 +97,8 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
 
         # split selection into lines
         selection = self.cleanString(selection).split("\n")
-        # define osascript arguments
-        args = ['osascript']
-        # add code lines to list of arguments
-        for part in selection:
-            args.extend(['-e', 'tell app "%s" to cmd "' % rapp + part + '"\n'])
-        # execute code
-        subprocess.Popen(args)
+
+        cmdr.send_code(selection)
 
         if is_single_select and not original_region.empty():
             # Reverses side effect from our `split_selection_into_lines` trick
@@ -94,6 +117,34 @@ class SendToRsessionCommand(sublime_plugin.TextCommand):
         # Remove the old region and add the new one
         self.view.sel().subtract(region)
         self.view.sel().add(sublime.Region(loc, loc))
+
+class Rcommander(object):
+
+    def __init__(self):
+        platform = sys.platform
+        self.app = rx_settings.get("Rapp")
+        if platform == "darwin":
+            self.send_code = self.send_code_darwin
+        elif platform == "nt":
+            self.send_code = self.send_code_win
+        elif platform == "linux2":
+            self.send_code = self.send_code_linux
+        else:
+            raise UnsupportedPlatformError("Unknown platform: %s" % platform)
+
+    def send_code_darwin(self, selection):
+        app = self.app
+        args = ['osascript']
+        for part in selection:
+            args.extend(['-e', 'tell app "%s" to cmd "' % app + part + '"\n'])
+        subprocess.Popen(args)
+
+    def send_code_nt(self, selection):
+        raise UnsupportedPlatformError("Windows platform not yet supported")
+
+    def send_code_linux(self, selection):
+        raise UnsupportedPlatformError("Linux platform not yet supported")
+
 
 class JumpToRsessionCommand(sublime_plugin.TextCommand):
     def run(self, edit):
