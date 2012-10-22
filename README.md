@@ -26,7 +26,8 @@ Hints
 
 Add a rule to your favorite color scheme to set the background of R chunks to a
 slightly different color in order to make them easier to recognize. For example,
-I've added this to Zenburnesque:
+to set the background color of embedded R source code to be a dark grey, you
+would:
 
     ...
     <key>settings</key>
@@ -40,13 +41,14 @@ I've added this to Zenburnesque:
         <key>settings</key>
         <dict>
           <key>background</key>
-          <string>#4C4C4C</string>
+          <string>#1B1B1B</string>
         </dict>
       </dict>
     </array>
     ...
 
-
+A modified copy of [Monokai Soda][monokaisoda] that includes such a highlight
+rule is included in this package.
 
 Origin Story
 ------------
@@ -65,6 +67,7 @@ This code is released under the [Apache 2][apache2] license.
 [apache2]: http://www.apache.org/licenses/LICENSE-2.0.html
 [ess]: http://ess.r-project.org
 [knitr]: http://yihui.name/knitr
+[monokaisoda]: https://github.com/buymeasoda/soda-theme#bonus-options
 [rlang]: http://www.r-project.org
 [rmd]: http://rstudio.org/docs/authoring/using_markdown
 [rstudio]: http://www.rstudio.org
