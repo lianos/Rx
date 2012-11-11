@@ -1,6 +1,21 @@
 [
+  // ---------------------------- commands ------------------------------------
   {
-    "keys": ["super+enter"], "command": "send_to_rsession"
+    "keys": ["super+enter"],
+    "command": "send_to_rsession"
+  },
+  // ---------------------------- snippets ------------------------------------
+  {
+    "keys": ["ctrl+shift+r"],
+    "command": "insert_snippet",
+    "args": { "name": "Packages/Rx/rmd-code-block.sublime-snippet" },
+    "context": [
+      { "key": "selector",
+        "operator": "equal",
+        "operand": "text.html.markdown.Rmarkdown",
+        "match_all": false
+      }
+    ]
   }
 
 ]
